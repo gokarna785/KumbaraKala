@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/cardImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:background="@android:color/white"/>
+
+    <Button
+        android:id="@+id/btnShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Share on WhatsApp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#8B4513"
+        android:layout_marginTop="16dp"/>
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save to Gallery"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#6D4C41"
+        android:layout_marginTop="10dp"/>
+
+
+</LinearLayout>
