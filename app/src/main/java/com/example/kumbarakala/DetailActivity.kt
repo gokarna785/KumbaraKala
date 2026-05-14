@@ -3,6 +3,7 @@ package com.example.kumbarakala
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,9 +26,15 @@ class DetailActivity : AppCompatActivity() {
         val nameText = findViewById<TextView>(R.id.productName)
         val shortText = findViewById<TextView>(R.id.productDescription)
         val fullText = findViewById<TextView>(R.id.fullDescription)
-        val btnGenerate = findViewById<Button>(R.id.btnGenerate)
+
         val viewPager = findViewById<ViewPager2>(R.id.imageSlider)
         val dotsLayout = findViewById<LinearLayout>(R.id.dotsLayout)
+
+        val editName = findViewById<EditText>(R.id.editName)
+        val editPhone = findViewById<EditText>(R.id.editPhone)
+
+        val btnGenerate = findViewById<Button>(R.id.btnGenerate)
+        val btnArtisan = findViewById<Button>(R.id.btnArtisan)
 
         // 🔹 Set Data
         nameText.text = name
@@ -51,7 +58,7 @@ class DetailActivity : AppCompatActivity() {
             dotsLayout.addView(dots[i], params)
         }
 
-        // Default active dot
+        // Default dot
         if (dots.isNotEmpty()) {
             dots[0].setImageResource(android.R.drawable.presence_online)
         }
@@ -69,6 +76,11 @@ class DetailActivity : AppCompatActivity() {
             }
         })
 
+        // ⭐ OPEN ARTISAN PAGE
+        btnArtisan.setOnClickListener {
+            startActivity(Intent(this, ArtisanActivity::class.java))
+        }
+
         // ⭐ GENERATE STORY CARD
         btnGenerate.setOnClickListener {
 
@@ -76,11 +88,15 @@ class DetailActivity : AppCompatActivity() {
             val selectedImage =
                 if (imageList.isNotEmpty()) imageList[currentPosition] else 0
 
+            val artisanName = editName.text.toString()
+            val artisanPhone = editPhone.text.toString()
+
             val intent = Intent(this, CardActivity::class.java)
 
             intent.putExtra("image", selectedImage)
             intent.putExtra("text", name)
-            intent.putExtra("artisan", "By Local Artisan")
+            intent.putExtra("artisan", artisanName)
+            intent.putExtra("phone", artisanPhone)
 
             startActivity(intent)
         }

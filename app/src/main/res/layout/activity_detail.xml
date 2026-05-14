@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F5E6D3"
-    android:paddingTop="16dp">
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:paddingTop="60dp">
 
         <!-- Product Name -->
         <TextView
             android:id="@+id/productName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
+            android:text="@string/product_name_placeholder"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#3E2723"
-            android:paddingBottom="8dp"/>
-
-        <!-- ⭐ IMAGE SLIDER -->
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="20dp"/>
+        <!-- Image Slider -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/imageSlider"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="220dp"/>
+
+        <!-- Dots Indicator -->
         <LinearLayout
             android:id="@+id/dotsLayout"
             android:layout_width="wrap_content"
@@ -36,13 +35,14 @@
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"/>
+
         <!-- Short Description -->
         <TextView
             android:id="@+id/productDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/short_description_placeholder"
             android:textSize="16sp"
-            android:textColor="#5D4037"
             android:layout_marginTop="12dp"/>
 
         <!-- Full Description -->
@@ -50,25 +50,49 @@
             android:id="@+id/fullDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/full_description_placeholder"
             android:textSize="14sp"
-            android:textColor="#4E342E"
-            android:layout_marginTop="8dp"
-            android:lineSpacingExtra="3dp"/>
+            android:layout_marginTop="6dp"/>
+
+        <!-- ⭐ Meet Artisan Button -->
+        <Button
+            android:id="@+id/btnArtisan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MEET THE ARTISAN"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#8B4513"
+            android:textColor="#FFFFFF"/>
+
+        <!-- Name Input -->
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_artisan_name"
+            android:inputType="textPersonName"
+            android:autofillHints="name"
+            android:layout_marginTop="12dp"/>
+
+        <!-- Phone Input -->
+        <EditText
+            android:id="@+id/editPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_phone_number"
+            android:inputType="phone"
+            android:autofillHints="phone"
+            android:layout_marginTop="8dp"/>
 
         <!-- Generate Button -->
         <Button
             android:id="@+id/btnGenerate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Generate Story Card"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:text="CREATE STORY CARD"
+            android:layout_marginTop="16dp"
             android:backgroundTint="#8B4513"
-            android:layout_marginTop="20dp"
-            android:padding="12dp"/>
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
-
 </ScrollView>

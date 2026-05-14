@@ -4,15 +4,15 @@ import android.content.ContentValues
 import android.content.Intent
 import android.graphics.*
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
-import java.io.File
-import java.io.FileOutputStream
+import java.io.OutputStream
 
 class CardActivity : AppCompatActivity() {
 
@@ -27,112 +27,124 @@ class CardActivity : AppCompatActivity() {
         val btnShare = findViewById<Button>(R.id.btnShare)
         val btnSave = findViewById<Button>(R.id.btnSave)
 
-        // Get data
+        // 🔹 Get Data
         val imageRes = intent.getIntExtra("image", 0)
         val text = intent.getStringExtra("text") ?: ""
-        val artisan = intent.getStringExtra("artisan") ?: "By Local Artisan"
+        val artisan = intent.getStringExtra("artisan") ?: "Local Artisan"
+        val phone = intent.getStringExtra("phone") ?: "N/A"
 
-        // Load image
+        // 🔹 Original Image
         val original = BitmapFactory.decodeResource(resources, imageRes)
-        bitmap = original.copy(Bitmap.Config.ARGB_8888, true)
 
-        val canvas = Canvas(bitmap)
-
-        val paint = Paint()
-        paint.isAntiAlias = true
-
-        // Background strip
-        paint.color = Color.parseColor("#80000000")
-        canvas.drawRect(
-            0f,
-            bitmap.height - 200f,
-            bitmap.width.toFloat(),
-            bitmap.height.toFloat(),
-            paint
+        // 🔹 Create Bitmap
+        bitmap = Bitmap.createBitmap(
+            original.width,
+            original.height,
+            Bitmap.Config.ARGB_8888
         )
 
-        // Text
+        val canvas = Canvas(bitmap)
+        canvas.drawBitmap(original, 0f, 0f, null)
+
+        // 🔹 TEXT PAINT
+        val paint = Paint()
         paint.color = Color.WHITE
-        paint.textSize = 40f
-        canvas.drawText(text, 30f, bitmap.height - 120f, paint)
+        paint.textSize = 70f
+        paint.typeface = Typeface.DEFAULT_BOLD
+        paint.isAntiAlias = true
+        paint.textAlign = Paint.Align.CENTER
+        paint.setShadowLayer(5f, 2f, 2f, Color.BLACK)
 
-        paint.textSize = 30f
-        canvas.drawText("KumbaraKala", 30f, bitmap.height - 70f, paint)
-        canvas.drawText(artisan, 30f, bitmap.height - 30f, paint)
+        // 🔹 BACKGROUND BOX
+        val bgPaint = Paint()
+        bgPaint.color = Color.parseColor("#CC000000")
 
+        val rectTop = bitmap.height - 300f
+        val rectBottom = bitmap.height.toFloat()
+
+        canvas.drawRect(
+            0f,
+            rectTop,
+            bitmap.width.toFloat(),
+            rectBottom,
+            bgPaint
+        )
+
+        // 🔹 CENTER POSITION
+        val centerX = bitmap.width / 2f
+        val boxCenterY = rectTop + (rectBottom - rectTop) / 2
+        val lineSpacing = 80f
+
+        // 🔹 DRAW TEXT (CENTERED PERFECTLY)
+        // Product Name (bigger)
+        paint.textSize = 80f
+        canvas.drawText(text, centerX, boxCenterY - lineSpacing, paint)
+
+        // Artisan + Phone (slightly smaller)
+        paint.textSize = 60f
+        canvas.drawText("By: $artisan", centerX, boxCenterY, paint)
+        canvas.drawText("Ph: $phone", centerX, boxCenterY + lineSpacing, paint)
+
+        // 🔹 SET IMAGE
         imageView.setImageBitmap(bitmap)
 
-        // Share button
+        // 🔹 SHARE BUTTON
         btnShare.setOnClickListener {
-            shareImage()
+            val path = MediaStore.Images.Media.insertImage(
+                contentResolver,
+                bitmap,
+                "StoryCard",
+                null
+            )
+
+            val uri = Uri.parse(path)
+
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "image/*"
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+            startActivity(Intent.createChooser(shareIntent, "Share via"))
         }
 
-        // Save button
+        // 🔹 SAVE BUTTON
         btnSave.setOnClickListener {
-            saveImageToGallery()
+            saveImageToGallery(bitmap)
         }
     }
 
-    // 🔗 SHARE FUNCTION
-    private fun shareImage() {
-        Thread {
-            try {
-                val file = File(cacheDir, "card.png")
-                val output = FileOutputStream(file)
+    // 🔹 SAVE FUNCTION
+    private fun saveImageToGallery(bitmap: Bitmap) {
 
-                bitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
-                output.flush()
-                output.close()
+        val filename = "StoryCard_${System.currentTimeMillis()}.jpg"
+        var fos: OutputStream? = null
 
-                val uri: Uri = FileProvider.getUriForFile(
-                    this,
-                    "$packageName.provider",
-                    file
-                )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
-                runOnUiThread {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "image/*"
-                    intent.putExtra(Intent.EXTRA_STREAM, uri)
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                    startActivity(Intent.createChooser(intent, "Share via"))
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }.start()
-    }
-
-    // 💾 SAVE TO GALLERY FUNCTION
-    private fun saveImageToGallery() {
-        try {
-            val filename = "KumbaraKala_${System.currentTimeMillis()}.png"
-
-            val resolver = contentResolver
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/KumbaraKala")
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
             }
 
-            val imageUri = resolver.insert(
+            val imageUri = contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 contentValues
             )
 
-            val fos = resolver.openOutputStream(imageUri!!)
+            fos = imageUri?.let { contentResolver.openOutputStream(it) }
 
-            fos?.use {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-            }
+        } else {
 
-            Toast.makeText(this, "Saved to Gallery ✅", Toast.LENGTH_SHORT).show()
+            val imagesDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES
+            )
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Save Failed ❌", Toast.LENGTH_SHORT).show()
+            val image = java.io.File(imagesDir, filename)
+            fos = java.io.FileOutputStream(image)
+        }
+
+        fos?.use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            Toast.makeText(this, "Saved to Gallery", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -4,4 +4,11 @@
     <string name="username">Username</string>
     <string name="login">Login</string>
     <string name="kumbarakala">KumbaraKala 🏺</string>
+    <string name="product_name_placeholder">Product Name</string>
+    <string name="short_description_placeholder">Short Description</string>
+    <string name="full_description_placeholder">Full Description</string>
+    <string name="meet_the_artisan">Meet the Artisan</string>
+    <string name="enter_artisan_name">Enter Artisan Name</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="generate_story_card">Generate Story Card</string>
 </resources>

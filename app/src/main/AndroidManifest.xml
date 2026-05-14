@@ -3,45 +3,37 @@
 
     <application
         android:allowBackup="true"
-        android:label="KumbaraKala"
         android:icon="@mipmap/ic_launcher"
+        android:label="KumbaraKala"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KumbaraKala">
-
+        <activity
+            android:name=".ArtisanActivity"
+            android:exported="false" />
         <!-- 🔐 Login Screen (Launcher) -->
         <activity
             android:name=".LoginActivity"
-            android:exported="true">   <!-- ✅ ADD THIS -->
+            android:exported="true"> <!-- ✅ ADD THIS -->
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-
-        <!-- 🏠 Main App -->
-        <activity android:name=".MainActivity" />
-
-        <!-- 📄 Detail Screen -->
-        <activity android:name=".DetailActivity" />
-
-        <!-- 🖼 Story Card Screen -->
-        <activity android:name=".CardActivity" />
-
-        <!-- 📂 FileProvider (for sharing images) -->
+        </activity> <!-- 🏠 Main App -->
+        <activity android:name=".MainActivity" /> <!-- 📄 Detail Screen -->
+        <activity android:name=".DetailActivity" /> <!-- 🖼 Story Card Screen -->
+        <activity android:name=".CardActivity" /> <!-- 📂 FileProvider (for sharing images) -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>
